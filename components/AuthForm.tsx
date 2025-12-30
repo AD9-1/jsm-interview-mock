@@ -17,6 +17,10 @@ const AuthForm = () => {
       username: "",//this sets the default value for username field
     },
   });
+    
+const onSubmit=(data:AuthFormData)=>{
+    console.log("Form Data Submitted: ", data);
+}
   return <div>
      <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
