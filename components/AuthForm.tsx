@@ -19,7 +19,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Image from "next/image";
 
-const AuthForm = ({type}: { type: "login" | "signup" }) => {
+const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const form = useForm<AuthFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,18 +34,33 @@ const AuthForm = ({type}: { type: "login" | "signup" }) => {
     <div className="w-md border border-2 rounded-md p-1 lg:w-1/2">
       <div className="bg-gradient-to-l from-gray-400 via-gray-400 to bg-gray-500 p-2 rounded-xl p-4">
         <div className="flex items-center justify-center">
-        <Image src="/microphone.png" height={20} width={75} alt="Microphone" />
-        <h1 className="text-xl font-semibold text-center text-gray-900">Sign Up</h1>
+          <Image
+            src="/microphone.png"
+            height={20}
+            width={75}
+            alt="Microphone"
+          />
+          <h1 className="text-xl font-semibold text-center text-gray-900">
+            Sign Up
+          </h1>
         </div>
-        <h3 className="text-lg  md:text-2xl font-medium text-center">Practice job interview with AI</h3>
-      
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-2">
-          
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-    </div>
+        <h3 className="text-lg  md:text-2xl font-medium text-center">
+          Practice job interview with AI
+        </h3>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 mt-2"
+          >
+            {type === "sign-up" && <p className="mb-2 ml-5">Name</p>}
+            <p className="mb-2 ml-5">Email</p>
+            <p className="mb-2 ml-5">Password</p>
+
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 };
