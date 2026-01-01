@@ -1,9 +1,10 @@
 import { z } from "zod";
-export const formSchema = z.object({
-  username: z
-    .string()
-    .min(2, "Username must of least 2 characters")
-    .max(50, "Username must be at most 50 characters"),
-});
+export const AuthformSchema = ({type}:{type: "sign-in" | "sign-up"}) => {
+  return z.object({
+    name: type === "sign-up" ? z.string().min(3, "Name must be at least 3 characters") : z.string().optional(),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+  });
+};
 
-export type AuthFormData = z.infer<typeof formSchema>;
+export type AuthFormData = z.infer<ReturnType<typeof AuthformSchema>>;

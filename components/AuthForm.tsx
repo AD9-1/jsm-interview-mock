@@ -6,31 +6,34 @@ import { useForm } from "react-hook-form";
 
 import { z } from "zod";
 
-import { AuthFormData, formSchema } from "@/zodutils/authFormSchema";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
+import { AuthFormData, AuthformSchema } from "@/zodutils/authFormSchema";
+
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const form = useForm<AuthFormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(AuthformSchema({type})),
     defaultValues: {
-      username: "", //this sets the default value for username field
+     name: "", //this sets the default value for name field
+      email: "",
+      password: "",
     },
   });
 
   const onSubmit = (data: AuthFormData) => {
-    console.log("Form Data Submitted: ", data);
+    try{
+
+
+    }
+    catch(err){
+      console.error("Error submitting form: ", err);
+      toast.error("An error occurred while submitting the form.");
+    }
+ 
   };
   return (
     <div className="w-md border border-2 rounded-md p-1 lg:w-1/2">
