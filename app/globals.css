@@ -122,3 +122,9 @@
   }
 }
 
+@layer components {
+  .btn{
+ @apply  border border-[#0c0b1e] px-4 py-2 bg-[#a2a0c5] font-semibold text-shadow-lg w-full text-primary rounded-2xl hover:bg-secondary/90 transition;
+}
+}
+

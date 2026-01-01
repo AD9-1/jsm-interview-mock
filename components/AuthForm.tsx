@@ -1,4 +1,5 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -57,9 +58,10 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
             <p className="mb-2 ml-5">Email</p>
             <p className="mb-2 ml-5">Password</p>
 
-            <Button type="submit">Submit</Button>
+            <button className="btn" type="submit" >{type === "sign-up" ? "Sign Up" : "Sign In"}</button>
           </form>
         </Form>
+        <p className="mb-2 ml-5">{type==="sign-in"?"Don't have an account?":"Already have an account?"}</p>
       </div>
     </div>
   );
