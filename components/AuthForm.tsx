@@ -19,6 +19,7 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const form = useForm<AuthFormData>({
@@ -42,7 +43,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
             alt="Microphone"
           />
           <h1 className="text-xl font-semibold text-center text-gray-900">
-            Sign Up
+          {type === "sign-in" ? " Sign In" : " Sign Up"}
           </h1>
         </div>
         <h3 className="text-lg  md:text-2xl font-medium text-center">
@@ -58,10 +59,24 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
             <p className="mb-2 ml-5">Email</p>
             <p className="mb-2 ml-5">Password</p>
 
-            <button className="btn" type="submit" >{type === "sign-up" ? "Sign Up" : "Sign In"}</button>
+            <button className="btn" type="submit">
+              {type === "sign-up" ? "Sign Up" : "Sign In"}
+            </button>
           </form>
         </Form>
-        <p className="mb-2 ml-5">{type==="sign-in"?"Don't have an account?":"Already have an account?"}</p>
+        <p className="text-center mt-2 text-gray-800">
+          {type === "sign-in"
+            ? "Don't have an account?"
+            : "Already have an account?"}
+          <span>
+            <Link
+              href={type === "sign-in" ? "/auth/sign-up" : "/auth/sign-in"}
+              className=" font-semibold"
+            >
+              {type === "sign-in" ? " Sign Up" : " Sign In"}
+            </Link>
+          </span>
+        </p>
       </div>
     </div>
   );
