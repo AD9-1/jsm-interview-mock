@@ -13,27 +13,30 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Form } from "./ui/form";
+import router from "next/router";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const form = useForm<AuthFormData>({
-    resolver: zodResolver(AuthformSchema({type})),
+    resolver: zodResolver(AuthformSchema({ type })),
     defaultValues: {
-     name: "", //this sets the default value for name field
+      name: "", //this sets the default value for name field
       email: "",
       password: "",
     },
   });
 
   const onSubmit = (data: AuthFormData) => {
-    try{
-
-
-    }
-    catch(err){
+    try {
+      if (type === "sign-up") {
+        toast.success("Account created successfully.Please sign in");
+        router.push("/sign-in");
+      }
+    } catch (err) {
       console.error("Error submitting form: ", err);
       toast.error("An error occurred while submitting the form.");
+      router.push("/");
     }
- 
   };
   return (
     <div className="w-md border border-2 rounded-md p-1 lg:w-1/2">
@@ -46,7 +49,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
             alt="Microphone"
           />
           <h1 className="text-xl font-semibold text-center text-gray-900">
-          {type === "sign-in" ? " Sign In" : " Sign Up"}
+            {type === "sign-in" ? " Sign In" : " Sign Up"}
           </h1>
         </div>
         <h3 className="text-lg  md:text-2xl font-medium text-center">
