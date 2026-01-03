@@ -1,19 +1,21 @@
 import Link from "next/link";
 import React, { Children } from "react";
+import { FcAssistant } from "react-icons/fc";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
-      <div className="flex flex-col bg-gradient-to-t from-[#E0D1D1] via-[#d0c7c5] to-[#847054] max-w-6xl mx-auto py-12 mt-3 rounded">
+
+      <div className="flex flex-col bg-gradient-to-t from-[#E0D1D1] via-[#d0c7c5] to-[#e5d6c2]
+       max-w-7xl mx-auto py-8 mt-3 rounded-[50px]  px-4">
         <nav>
-          <Link href="/" className="flex gap-2">
-            <img src="/logo.png" alt="Logo" className="h-10 w-10" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+          <Link href="/" className="flex gap-2 items-center md:justify-evenly">
+           <FcAssistant className="h-20 w-20 md:h-30 md:w-30"/>
+            <span className=" text-4xl font-semibold whitespace-nowrap dark:text-white md:text-7xl">
               MockWise
             </span>
           </Link>
         </nav>
-      </div>
+   
       {children}
     </div>
   );
