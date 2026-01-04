@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { VscRobot } from "react-icons/vsc";
+import { dummyInterviews } from "@/constants/index.t";
+import InterviewCard from "@/components/InterviewCard";
 
 const RootPage = () => {
   return (
@@ -36,6 +38,9 @@ const RootPage = () => {
       <section className="flex flex-col gap-4 mt-6 ml-3">
         <h2 className="text-4xl font-semibold">Your Interview</h2>
         <div>
+          {dummyInterviews?.map((interview) => {
+            return <InterviewCard {...interview}/>;
+          })}
           <p className="text-lg">You haven't taken any interview yet.</p>
         </div>
       </section>
