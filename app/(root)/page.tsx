@@ -39,7 +39,7 @@ const RootPage = () => {
         <h2 className="text-4xl font-semibold">Your Interview</h2>
         <div>
           {dummyInterviews?.map((interview) => {
-            return <InterviewCard {...interview}/>;
+            return <InterviewCard key={interview.id} {...interview} />;
           })}
           <p className="text-lg">You haven't taken any interview yet.</p>
         </div>
