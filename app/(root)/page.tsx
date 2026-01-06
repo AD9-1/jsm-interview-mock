@@ -37,12 +37,13 @@ const RootPage = () => {
       </div>
       <section className="flex flex-col gap-4 mt-6 ml-3">
         <h2 className="text-4xl font-semibold">Your Interview</h2>
-        <div>
+        <div className="flex max-sm:flex-col flex-row gap-6 overflow-x-auto ">
           {dummyInterviews?.map((interview) => {
             return <InterviewCard key={interview.id} {...interview} />;
           })}
-          <p className="text-lg">You haven't taken any interview yet.</p>
+   
         </div>
+               <p className="text-lg">You haven't taken any interview yet.</p>
       </section>
       <section className="flex flex-col gap-4 mt-6 ml-3">
         <h2 className="text-4xl font-semibold">Take an Interview</h2>
