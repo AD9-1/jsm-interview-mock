@@ -1,4 +1,6 @@
+import { interviewImage } from "@/constants/index.t";
 import dayjs from "dayjs";
+import Image from "next/image";
 import React from "react";
 
 const InterviewCard = ({
@@ -14,17 +16,22 @@ const InterviewCard = ({
   const formattedDate = dayjs(
     feedback?.createdAt || createdAt || Date.now()
   ).format("MMM D, YYYY");
+  const getRandomImage=()=>{
+return interviewImage[Math.floor(Math.random() * interviewImage.length)];
+  }
   return (
     <div
       className=" bg-gradient-to-r from-[#c9b5a1] via-[#ecd7b9] to-[#eac087]
-   shadow-xl max-sm:w-full w-[360px] min-h-96 rounded p-1 relative"
+   shadow-xl max-sm:w-full w-[360px] min-h-96 rounded py-.5 px-1 relative"
     >
       <div className="bg-gradient-to-t from-[#4f473e] via-[#be9255] to-[#eac087]
-       w-full h-1/6 shadow-xl rounded-[20px] my-1 ">
+       w-full h-[50px] shadow-xl rounded-[20px] my-1 ">
         <div className="">
-          <div className=" absolute top-0 right-0 bg-light-600">
+          <div className=" absolute top-0 right-0 bg-gradient-to-r from-[#a88461]
+           to-[#d2b790] p-1 rounded-bl-lg">
             <p className="text-md font-semibold">{normalizedType}</p>
           </div>
+          <Image src={getRandomImage()} width={90} height={80} alt="logo"></Image>
         </div>
       </div>
     </div>

@@ -117,3 +117,15 @@ export const mappings = {
   vercel: "vercel",
   "aws amplify": "amplify",
 };
+export const interviewImage=[
+  "/covers/amazon.jpg",
+  "/covers/facebook.png",
+  "/covers/instagram.jpg",
+  "/covers/microsoft.png",
+  "/covers/musigma.jpg",
+  "/covers/quora.png",
+  "/covers/reddit.jpg",
+  "/covers/Revi.png",
+  "/covers/teams.png",
+  "/covers/twitter.png"
+]
