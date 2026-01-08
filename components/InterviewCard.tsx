@@ -4,6 +4,7 @@ import Image from "next/image";
 import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import DisplayTechIcons from "./DisplayTechIcons";
 
 const InterviewCard = ({
   id,
@@ -58,8 +59,9 @@ const InterviewCard = ({
             "You havent taken the interview yet.Take it now to get feedback!"}
         </h4>
         <div className="mt-4 flex justify-between">
-          <p>Texnk</p>
-          <Button className="bg-amber-950 text-stone-300 hover:bg-amber-800 hover:scale-90">
+          <p><DisplayTechIcons techstack={techstack}/></p>
+          <Button className="bg-amber-950 text-stone-300
+           hover:bg-amber-800 hover:scale-90">
             <Link
               href={
                 feedback
@@ -68,7 +70,7 @@ const InterviewCard = ({
               }
             >
               {" "}
-              View Feedback
+              {feedback ? "View Feedback" : "Take Interview"}
             </Link>
           </Button>
         </div>
