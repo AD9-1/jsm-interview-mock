@@ -2,6 +2,8 @@ import { interviewImage } from "@/constants/index.t";
 import dayjs from "dayjs";
 import Image from "next/image";
 import React from "react";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const InterviewCard = ({
   id,
@@ -28,37 +30,49 @@ const InterviewCard = ({
         className="bg-gradient-to-t from-[#4f473e] via-[#be9255] to-[#eac087]
        w-full p-2 shadow-xl rounded-[10px] my-1 "
       >
-  
-          <div
-            className=" absolute top-0 right-0 bg-gradient-to-r from-[#a88461]
+        <div
+          className=" absolute top-0 right-0 bg-gradient-to-r from-[#a88461]
            to-[#d2b790] p-1 rounded-bl-lg"
-          >
-            <p className="text-md font-semibold">{normalizedType}</p>
-          </div>
-          <Image
-            src={getRandomImage()}
-            width={50}
-            height={50}
-            className="size-[50px] rounded object-fill"
-            alt="logo"
-          ></Image>
-          <h3 className=" text-lg font-stretch-50% mt-2">{role} Interview</h3>
-          <section className="flex gap-5 flex-wrap">
-            <p className="text-stone-300 ">{formattedDate}</p>
-            <div className="flex gap-2">
-              <p className="text-stone-50 text-sm">
-                Score: {feedback?.totalScore || "--"}/100
-              </p>
-            </div>
-          </section>
-
-          <h4 className= " line-clamp-2 mt-2 font-serif text-sm text-shadow-stone-600">
-            {feedback?.finalAssessment ||
-              "You havent taken the interview yet.Take it now to get feedback!"}
-          </h4>
-
+        >
+          <p className="text-md font-semibold">{normalizedType}</p>
         </div>
- 
+        <Image
+          src={getRandomImage()}
+          width={50}
+          height={50}
+          className="size-[50px] rounded object-fill"
+          alt="logo"
+        ></Image>
+        <h3 className=" text-lg font-stretch-50% mt-2">{role} Interview</h3>
+        <section className="flex gap-5 flex-wrap">
+          <p className="text-stone-300 ">{formattedDate}</p>
+          <div className="flex gap-2">
+            <p className="text-stone-50 text-sm">
+              Score: {feedback?.totalScore || "--"}/100
+            </p>
+          </div>
+        </section>
+
+        <h4 className=" line-clamp-2 mt-1 text-sm font-semibold text-shadow-stone-600">
+          {feedback?.finalAssessment ||
+            "You havent taken the interview yet.Take it now to get feedback!"}
+        </h4>
+        <div className="mt-4 flex justify-between">
+          <p>Texnk</p>
+          <Button className="bg-amber-950 text-stone-300 hover:bg-amber-800 hover:scale-90">
+            <Link
+              href={
+                feedback
+                  ? `/interview/${id}/feedback`
+                  : `/interview/${id}`
+              }
+            >
+              {" "}
+              View Feedback
+            </Link>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
