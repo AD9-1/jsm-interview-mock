@@ -58,7 +58,7 @@ const InterviewCard = ({
           {feedback?.finalAssessment ||
             "You havent taken the interview yet.Take it now to get feedback!"}
         </h4>
-        <div className="mt-4 flex justify-between">
+      <div className="mt-4 flex place-items-center justify-between flex-wrap gap-2 mb-3">
           <p>
             <DisplayTechIcons techstack={techstack} />
           </p>
