@@ -1,6 +1,6 @@
 import React from "react";
 
-const DisplayTechIcons = ({ techstack }: string[]) => {
+const DisplayTechIcons = ({ techstack} :{techstack:string[]}) => {
   return (
     <div className="flex gap-2">
       {techstack.map((tech) => (

@@ -59,15 +59,15 @@ const InterviewCard = ({
             "You havent taken the interview yet.Take it now to get feedback!"}
         </h4>
         <div className="mt-4 flex justify-between">
-          <p><DisplayTechIcons techstack={techstack}/></p>
-          <Button className="bg-amber-950 text-stone-300
-           hover:bg-amber-800 hover:scale-90">
+          <p>
+            <DisplayTechIcons techstack={techstack} />
+          </p>
+          <Button
+            className="bg-amber-950 text-stone-300
+           hover:bg-amber-800 hover:scale-90"
+          >
             <Link
-              href={
-                feedback
-                  ? `/interview/${id}/feedback`
-                  : `/interview/${id}`
-              }
+              href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
               {" "}
               {feedback ? "View Feedback" : "Take Interview"}
