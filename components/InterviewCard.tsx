@@ -28,7 +28,7 @@ const InterviewCard = ({
         className="bg-gradient-to-t from-[#4f473e] via-[#be9255] to-[#eac087]
        w-full p-2 shadow-xl rounded-[10px] my-1 "
       >
-        <div className="">
+  
           <div
             className=" absolute top-0 right-0 bg-gradient-to-r from-[#a88461]
            to-[#d2b790] p-1 rounded-bl-lg"
@@ -52,12 +52,13 @@ const InterviewCard = ({
             </div>
           </section>
 
-          <h4 className="mt-2 font-semibold">
+          <h4 className= " line-clamp-2 mt-2 font-serif text-sm text-shadow-stone-600">
             {feedback?.finalAssessment ||
-              "You havent taken the interview yet.Take it now skills"}
+              "You havent taken the interview yet.Take it now to get feedback!"}
           </h4>
+
         </div>
-      </div>
+ 
     </div>
   );
 };
