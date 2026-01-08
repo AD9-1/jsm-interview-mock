@@ -1,9 +1,11 @@
 import React from "react";
-
-const DisplayTechIcons = ({ techstack} :{techstack:string[]}) => {
+import  {getTechIcon} from "../lib/utils";
+const DisplayTechIcons = async({ techstack} :{techstack:string[]}) => {
+    const techIcons=await getTechIcon(techstack);
+    console.log(techIcons);
   return (
     <div className="flex gap-2">
-      {techstack.map((tech) => (
+      {techIcons.slice(0,3).map(({tech, url}) => (
         <p key={tech}>{tech}</p>
       ))}
     </div>
