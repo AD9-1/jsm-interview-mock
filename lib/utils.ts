@@ -16,7 +16,7 @@ export const getTechIcon = async (techArray: string[]) => {
     const iconName = iconsMap(tech);
     return {
       iconName,
-      url: `${iconName}/${iconName}/${iconName}-original.svg`,
+      url: `${techIcons}/${iconName}/${iconName}-original.svg`,
     };
   });
 };
@@ -25,7 +25,7 @@ export const fetcher = async (techArray: string[]) => {
   return icons.map((item) => {
     return {
       item,
-      url: `${item}/${item}/${item}-original.svg`,
+      url: `${techIcons}/${item}/${item}-original.svg`,
     };
   });
 };
