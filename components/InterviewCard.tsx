@@ -25,13 +25,16 @@ return interviewImage[Math.floor(Math.random() * interviewImage.length)];
    shadow-xl max-sm:w-full w-[360px] min-h-96 rounded py-.5 px-1 relative"
     >
       <div className="bg-gradient-to-t from-[#4f473e] via-[#be9255] to-[#eac087]
-       w-full h-[50px] shadow-xl rounded-[20px] my-1 ">
+       w-full p-2 shadow-xl rounded-[20px] my-1 ">
         <div className="">
           <div className=" absolute top-0 right-0 bg-gradient-to-r from-[#a88461]
            to-[#d2b790] p-1 rounded-bl-lg">
             <p className="text-md font-semibold">{normalizedType}</p>
           </div>
-          <Image src={getRandomImage()} width={90} height={80} alt="logo"></Image>
+          <Image src={getRandomImage()} width={50} height={50} 
+          className="size-[50px] rounded object-fill" alt="logo"></Image>
+        <h3 className=" text-lg font-stretch-50%">{role} Interview</h3>
+        
         </div>
       </div>
     </div>
