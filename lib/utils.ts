@@ -12,8 +12,20 @@ const iconsMap = (tech: string) => {
   return mappings[k as keyof typeof mappings];
 };
 export const getTechIcon = async (techArray: string[]) => {
- return techArray.map((tech) => {
+  return techArray.map((tech) => {
     const iconName = iconsMap(tech);
-    return { iconName, url: `${iconName}/${iconName}/${iconName}-original.svg` };
+    return {
+      iconName,
+      url: `${iconName}/${iconName}/${iconName}-original.svg`,
+    };
+  });
+};
+export const fetcher = async (techArray: string[]) => {
+  const icons = techArray.map((tech) => iconsMap(tech));
+  return icons.map((item) => {
+    return {
+      item,
+      url: `${item}/${item}/${item}-original.svg`,
+    };
   });
 };
