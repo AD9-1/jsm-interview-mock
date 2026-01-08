@@ -7,11 +7,14 @@ const DisplayTechIcons = async ({ techstack }: { techstack: string[] }) => {
   return (
     <div className="flex gap-2">
       {techIcons.map(({ item, url }) => (
-        <div key={item} className="p-2 rounded-4xl relative bg-[#756789]">
-          <span className="absolute hover:bg-[#211137] hover:p-2 hover:text-white">
+        <div key={item} className="p-2 rounded-4xl group relative bg-[#241b30]">
+          <span
+            className=" hidden absolute bottom-full right-0.5 group-hover:block
+          bg-[#49454e] p-1 text-white text-[10px] rounded-xl"
+          >
             {item}
           </span>
-          <Image src={url} width={20} height={20} alt={item}></Image>
+          <Image src={url} width={12} height={20} alt={item}></Image>
         </div>
       ))}
     </div>
