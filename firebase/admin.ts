@@ -18,4 +18,4 @@ const initializeFBAdmin = () => {
   };
 };
 
-export default initializeFBAdmin;
+export const { auth, db } = initializeFBAdmin();
