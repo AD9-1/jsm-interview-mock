@@ -16,6 +16,9 @@ import { toast } from "sonner";
 import { Form } from "./ui/form";
 import router from "next/router";
 
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/client";
+
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const form = useForm<AuthFormData>({
     resolver: zodResolver(AuthformSchema({ type })),
@@ -26,9 +29,17 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
     },
   });
 
-  const onSubmit = (data: AuthFormData) => {
+  const onSubmit = async (data: AuthFormData) => {
     try {
       if (type === "sign-up") {
+        const userCred = await createUserWithEmailAndPassword(
+       
+          auth,
+          data.email,
+          data.password,
+        );
+
+        
         toast.success("Account created successfully.Please sign in");
         router.push("/sign-in");
       }

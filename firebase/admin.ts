@@ -2,7 +2,7 @@ import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 const initializeFBAdmin = () => {
-  const apps = getApps;
+  const apps = getApps();
   if (apps.length === 0) {
     initializeApp({
       credential: cert({

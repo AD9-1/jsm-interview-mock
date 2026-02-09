@@ -9,15 +9,24 @@ interface Interview {
   type: string;
   finalized: boolean;
 }
-interface InterviewCardProps{
-id:string,
-role:string,
-userId:string,
-techstack:string[],
-type:string,
-createdAt:string
+interface InterviewCardProps {
+  id: string;
+  role: string;
+  userId: string;
+  techstack: string[];
+  type: string;
+  createdAt: string;
 }
-
+interface SignInParams {
+  email: string;
+  idToken: string;
+}
+interface SignUpParams {
+  uid: string;
+  email: string;
+  name: string;
+  password: string;
+}
 interface Feedback {
   id: string;
   interviewId: string;
