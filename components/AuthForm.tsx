@@ -18,6 +18,7 @@ import router from "next/router";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/client";
+import { signup } from "@/lib/actions/auth.action";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const form = useForm<AuthFormData>({
@@ -33,15 +34,23 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
     try {
       if (type === "sign-up") {
         const userCred = await createUserWithEmailAndPassword(
-       
           auth,
           data.email,
           data.password,
         );
 
-        
-        toast.success("Account created successfully.Please sign in");
-        router.push("/sign-in");
+        const record = await signup({
+          uid: userCred.user.uid,
+          email: data.email,
+          name: data.name || "",
+          password: data.password,
+        });
+        if (record?.success) {
+          toast.success("Account created successfully.Please sign in");
+          router.push("/sign-in");
+        } else {
+          toast.error(record?.message);
+        }
       }
     } catch (err) {
       console.error("Error submitting form: ", err);
