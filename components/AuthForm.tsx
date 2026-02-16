@@ -16,9 +16,12 @@ import { toast } from "sonner";
 import { Form } from "./ui/form";
 import router from "next/router";
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "../firebase/client";
-import { signup } from "@/lib/actions/auth.action";
+import { signin, signup } from "@/lib/actions/auth.action";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const form = useForm<AuthFormData>({
@@ -46,10 +49,29 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
           password: data.password,
         });
         if (record?.success) {
-          toast.success("Account created successfully.Please sign in");
+          toast.success("Account created in database.Please sign in");
           router.push("/sign-in");
         } else {
           toast.error(record?.message);
+        }
+      } else {
+        const { email, password } = data;
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+        const idToken = await userCredential.user.getIdToken();
+        if(!idToken){
+          toast.error("Failed to sign_in/no token received");
+          return;
+        }
+        const record = await signin({ email, idToken });
+        if (record?.success) {
+          toast.success("Signed in successfully");
+          router.push("/");
+        } else {
+          toast.error(record.message);
         }
       }
     } catch (err) {

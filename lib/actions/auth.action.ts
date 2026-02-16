@@ -5,7 +5,7 @@ import { db, auth } from "@/firebase/admin";
 import { cookies } from "next/headers";
 
 export async function signup(params: SignUpParams) {
-  const { uid, name, email } = params;
+  const { uid, name, email,password } = params;
   try {
     const userRecord = await db.collection("users").doc(uid).get();
     if (userRecord.exists) {
@@ -17,6 +17,7 @@ export async function signup(params: SignUpParams) {
     await db.collection("users").doc(uid).set({
       name,
       email,
+      password
     });
   } catch (error: any) {
     console.error("Failed to sign up user");
