@@ -1,35 +1,24 @@
 "use server";
 
 import { db, auth } from "@/firebase/admin";
-
 import { cookies } from "next/headers";
 
 export async function signup(params: SignUpParams) {
-  const { uid, name, email,password } = params;
+  const { uid, name, email, password } = params;
   try {
-    const userRecord = await db.collection("users").doc(uid).get();
-    if (userRecord.exists) {
-      return {
-        success: false,
-        message: "User already exists,please sign in again",
-      };
-    }
     await db.collection("users").doc(uid).set({
       name,
       email,
-      password
+      password,
     });
-  } catch (error: any) {
-    console.error("Failed to sign up user");
-    if (error.code === "auth/email-already-in-use") {
-      return {
-        success: false,
-        message: "Email already in use",
-      };
-    }
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error(error);
     return {
       success: false,
-      message: "Failed to create user account",
+      message: "Database error",
     };
   }
 }

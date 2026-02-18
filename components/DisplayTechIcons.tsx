@@ -4,7 +4,7 @@ import Image from "next/image";
 import clsx from "clsx";
 const DisplayTechIcons = async ({ techstack }: { techstack: string[] }) => {
   const techIcons = await fetcher(techstack);
-  console.log(techIcons);
+  console.log("from DisplayTechocons",techIcons);
   return (
     <div className="flex">
       {techIcons.map(({ item, url }, index) => (

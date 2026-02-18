@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { VscRobot } from "react-icons/vsc";
+
 import { dummyInterviews } from "@/constants/index.t";
 import InterviewCard from "@/components/InterviewCard";
 

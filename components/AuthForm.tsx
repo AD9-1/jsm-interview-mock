@@ -1,20 +1,13 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
 import { useForm } from "react-hook-form";
-
-import { z } from "zod";
-
+import { EyeIcon, EyeClosed } from "lucide-react";
 import { AuthFormData, AuthformSchema } from "@/zodutils/authFormSchema";
-
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Form } from "./ui/form";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 import {
   createUserWithEmailAndPassword,
@@ -22,8 +15,10 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase/client";
 import { signin, signup } from "@/lib/actions/auth.action";
+import { useState } from "react";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
+  const [showPass, setShowPass] = useState(true);
   const form = useForm<AuthFormData>({
     resolver: zodResolver(AuthformSchema({ type })),
     defaultValues: {
@@ -32,10 +27,10 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
       password: "",
     },
   });
-
+const router=useRouter();
   const onSubmit = async (data: AuthFormData) => {
-    try {
-      if (type === "sign-up") {
+    if (type === "sign-up") {
+      try {
         const userCred = await createUserWithEmailAndPassword(
           auth,
           data.email,
@@ -48,21 +43,32 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
           name: data.name || "",
           password: data.password,
         });
-        if (record?.success) {
+console.log(record);
+        if (record.success!==true) {
+          toast.error("Failed to create account in database");
+          return
+        } 
           toast.success("Account created in database.Please sign in");
-          router.push("/sign-in");
-        } else {
-          toast.error(record?.message);
+          router.push("/auth/sign-in");
+        
+      } catch (error: any) {
+        if (error.code === "auth/email-already-in-use") {
+          toast.error("Email already in use");
+          console.error(error);
         }
-      } else {
-        const { email, password } = data;
+        else
+        toast.error("Failed to create account in database");
+      }
+    } else {
+      const { email, password } = data;
+      try {
         const userCredential = await signInWithEmailAndPassword(
           auth,
           email,
           password,
         );
         const idToken = await userCredential.user.getIdToken();
-        if(!idToken){
+        if (!idToken) {
           toast.error("Failed to sign_in/no token received");
           return;
         }
@@ -73,11 +79,9 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
         } else {
           toast.error(record.message);
         }
+      } catch (error) {
+        toast.error("Failed to sign in");
       }
-    } catch (err) {
-      console.error("Error submitting form: ", err);
-      toast.error("An error occurred while submitting the form.");
-      router.push("/");
     }
   };
   return (
@@ -103,10 +107,46 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 mt-2"
           >
-            {type === "sign-up" && <p className="mb-2 ml-5">Name</p>}
+            {type === "sign-up" && (
+              <>
+                <p className="mb-2 ml-5">Name</p>
+                <input
+                  type="text"
+                  {...form.register("name")}
+                  className="ml-5 mb-2 w-3/4 p-3 rounded-4xl border border-amber-50
+                focus:outline-none
+                focus:border-0
+                focus:ring-2
+                focus:ring-[#62608f]"
+                />
+              </>
+            )}
             <p className="mb-2 ml-5">Email</p>
+            <input
+              type="text"
+              {...form.register("email")}
+              className="ml-5 mb-2 w-3/4 p-3 rounded-4xl border border-amber-50
+              focus:outline-none
+                focus:border-0
+                focus:ring-2
+                focus:ring-[#62608f]"
+            />
             <p className="mb-2 ml-5">Password</p>
-
+            {
+              <div
+                className=" flex justify-between ml-5 mb-5 p-3 w-3/4 rounded-4xl border border-amber-50
+              "
+              >
+                <input
+                  type={showPass ? "password" : "text"}
+                  className="outline-0 w-full"
+                  {...form.register("password")}
+                />
+                <button type="button" onClick={() => setShowPass(!showPass)}>
+                  {showPass ? <EyeClosed /> : <EyeIcon />}
+                </button>
+              </div>
+            }
             <button className="btn" type="submit">
               {type === "sign-up" ? "Sign Up" : "Sign In"}
             </button>
