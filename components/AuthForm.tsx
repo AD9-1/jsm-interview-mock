@@ -68,19 +68,16 @@ console.log(record);
           password,
         );
         const idToken = await userCredential.user.getIdToken();
-        if (!idToken) {
-          toast.error("Failed to sign_in/no token received");
-          return;
-        }
+        console.log(idToken);
         const record = await signin({ email, idToken });
         if (record?.success) {
-          toast.success("Signed in successfully");
+          toast.success(record.message);
           router.push("/");
         } else {
           toast.error(record.message);
         }
-      } catch (error) {
-        toast.error("Failed to sign in");
+      } catch (error:any) {
+        toast.error("Failed to sign-in");
       }
     }
   };

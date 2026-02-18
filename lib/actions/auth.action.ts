@@ -25,17 +25,13 @@ export async function signup(params: SignUpParams) {
 export async function signin(params: SignInParams) {
   try {
     const userRecord = await auth.getUserByEmail(params.email);
-    if (userRecord) {
+ 
       await setSessionCookies(params.idToken);
       return {
         success: true,
         message: "User signed in successfully",
       };
-    }
-    return {
-      success: false,
-      message: "User does not exist,please create an account",
-    };
+   
   } catch (err) {
     console.log(err);
     return {
