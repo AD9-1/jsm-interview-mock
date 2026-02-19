@@ -1,6 +1,7 @@
 "use server";
 
 import { db, auth } from "@/firebase/admin";
+import { User } from "firebase/auth";
 import { cookies } from "next/headers";
 
 export async function signup(params: SignUpParams) {
@@ -25,13 +26,12 @@ export async function signup(params: SignUpParams) {
 export async function signin(params: SignInParams) {
   try {
     const userRecord = await auth.getUserByEmail(params.email);
- 
-      await setSessionCookies(params.idToken);
-      return {
-        success: true,
-        message: "User signed in successfully",
-      };
-   
+
+    await setSessionCookies(params.idToken);
+    return {
+      success: true,
+      message: "User signed in successfully",
+    };
   } catch (err) {
     console.log(err);
     return {
@@ -53,4 +53,37 @@ export async function setSessionCookies(idToken: string) {
     path: "/",
     secure: process.env.NODE_ENV === "production",
   });
+}
+export async function getCurrentUser(): Promise<User | null> {
+  const cookieStore = cookies(); 
+  const sessionCookie = (await cookieStore).get("session")?.value;
+
+  if (!sessionCookie) return null;
+
+  try {
+    const decodedClaims = await auth.verifySessionCookie(
+      sessionCookie,
+      true
+    );
+
+    const userRecord = await db
+      .collection("users")
+      .doc(decodedClaims.uid)
+      .get();
+
+    if (!userRecord.exists) return null;
+
+    return {
+      ...userRecord.data(),
+      id: userRecord.id,
+    } as User;
+
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+export async function isAuthenticated(){
+  const user=await getCurrentUser();
+  return !!user;
 }
