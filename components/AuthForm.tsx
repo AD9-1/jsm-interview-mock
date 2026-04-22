@@ -16,6 +16,7 @@ import {
 import { auth } from "../firebase/client";
 import { signin, signup } from "@/lib/actions/auth.action";
 import { useState } from "react";
+import FormField from "./FormField";
 
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const [showPass, setShowPass] = useState(true);
@@ -27,7 +28,7 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
       password: "",
     },
   });
-const router=useRouter();
+  const router = useRouter();
   const onSubmit = async (data: AuthFormData) => {
     if (type === "sign-up") {
       try {
@@ -43,21 +44,18 @@ const router=useRouter();
           name: data.name || "",
           password: data.password,
         });
-console.log(record);
-        if (record.success!==true) {
+        console.log(record);
+        if (record.success !== true) {
           toast.error("Failed to create account in database");
-          return
-        } 
-          toast.success("Account created in database.Please sign in");
-          router.push("/auth/sign-in");
-        
+          return;
+        }
+        toast.success("Account created in database.Please sign in");
+        router.push("/auth/sign-in");
       } catch (error: any) {
         if (error.code === "auth/email-already-in-use") {
           toast.error("Email already in use");
           console.error(error);
-        }
-        else
-        toast.error("Failed to create account in database");
+        } else toast.error("Failed to create account in database");
       }
     } else {
       const { email, password } = data;
@@ -76,7 +74,7 @@ console.log(record);
         } else {
           toast.error(record.message);
         }
-      } catch (error:any) {
+      } catch (error: any) {
         toast.error("Failed to sign-in");
       }
     }
@@ -88,7 +86,7 @@ console.log(record);
           <Image
             src="/microphone.png"
             height={20}
-            width={75}
+            width={55}
             alt="Microphone"
           />
           <h1 className="text-xl font-semibold text-center text-gray-900">
@@ -102,48 +100,36 @@ console.log(record);
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-2"
+            className="space-y-6 mt-2"
           >
             {type === "sign-up" && (
               <>
-                <p className="mb-2 ml-5">Name</p>
-                <input
-                  type="text"
-                  {...form.register("name")}
-                  className="ml-5 mb-2 w-3/4 p-3 rounded-4xl border border-amber-50
-                focus:outline-none
-                focus:border-0
-                focus:ring-2
-                focus:ring-[#62608f]"
+                <FormField
+                  control={form.control}
+                  name="name"
+                  label="Name"
+                  placeholder="Your name"
+                 
                 />
+              
               </>
             )}
-            <p className="mb-2 ml-5">Email</p>
-            <input
-              type="text"
-              {...form.register("email")}
-              className="ml-5 mb-2 w-3/4 p-3 rounded-4xl border border-amber-50
-              focus:outline-none
-                focus:border-0
-                focus:ring-2
-                focus:ring-[#62608f]"
-            />
-            <p className="mb-2 ml-5">Password</p>
-            {
-              <div
-                className=" flex justify-between ml-5 mb-5 p-3 w-3/4 rounded-4xl border border-amber-50
-              "
-              >
-                <input
-                  type={showPass ? "password" : "text"}
-                  className="outline-0 w-full"
-                  {...form.register("password")}
+            <FormField
+                  control={form.control}
+                  name="email"
+                  label="Email"
+                  placeholder="Your email"
+                  type="email"
+                 
                 />
-                <button type="button" onClick={() => setShowPass(!showPass)}>
-                  {showPass ? <EyeClosed /> : <EyeIcon />}
-                </button>
-              </div>
-            }
+         <FormField
+                  control={form.control}
+                  name="password"
+                  label="Password"
+                  placeholder="Your password"
+                  type="password"
+                 
+                />
             <button className="btn" type="submit">
               {type === "sign-up" ? "Sign Up" : "Sign In"}
             </button>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Montagu_Slab } from "next/font/google";
 import { Mona_Sans } from "next/font/google";
-import "./globals.css";
+import "../app/globals.css";
 import { Toaster } from "sonner";
 
 const montaguSlab = Montagu_Slab({

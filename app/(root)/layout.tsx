@@ -2,13 +2,13 @@
 import { isAuthenticated } from "@/lib/actions/auth.action";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import React, { Children } from "react";
+import React from "react";
 import { FcAssistant } from "react-icons/fc";
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
 
   const isUserAuth = await isAuthenticated();
-  if (!isUserAuth) redirect("/auth/sign-in");
+if (!isUserAuth) redirect("/auth/sign-in");
   return (
     <div
       className="flex flex-col bg-gradient-to-t from-[#E0D1D1] via-[#cea79e] to-[#e5d6c2]
