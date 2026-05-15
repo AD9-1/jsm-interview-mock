@@ -10,15 +10,15 @@ const AuthLayout = async ({ children }: { children: ReactNode }) => {
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-primary/70">
               AI Interview Studio
             </p>
-            <h1 className="max-w-xl font-[family-name:var(--font-montagu-slab)] text-5xl leading-tight text-foreground">
+            <h1 className="font-[family-name:var(--font-montagu-slab)] text-5xl leading-tight text-foreground">
               Train with sharper mock interviews that feel structured and focused.
             </h1>
-            <p className="mt-6 max-w-lg text-lg leading-8 text-foreground/70">
+            <p className="mt-6  text-lg leading-8 text-foreground/70">
               Practice technical and behavioral rounds, review your performance,
               and keep everything in one workspace designed to feel calm and
               deliberate.
             </p>
-            <div className="mt-10 grid max-w-xl grid-cols-3 gap-4">
+            <div className="mt-10 grid grid-cols-3 gap-4 ">
               <div className="rounded-[1.5rem] border border-primary/10 bg-white/60 p-4">
                 <p className="text-3xl font-semibold text-primary">24/7</p>
                 <p className="mt-2 text-sm text-foreground/65">Practice whenever you need a rep.</p>
