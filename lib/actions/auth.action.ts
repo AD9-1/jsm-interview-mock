@@ -6,7 +6,15 @@ import { cookies } from "next/headers";
 
 export async function signup(params: SignUpParams) {
   const { uid, name, email, password } = params;
+
   try {
+    const userRecord = await db.collection("users").doc(uid).get();
+    if (userRecord.exists) {
+      return {
+        success: false,
+        message: "User  already exists.Please sign-in instead",
+      };
+    }
     await db.collection("users").doc(uid).set({
       name,
       email,
@@ -15,22 +23,34 @@ export async function signup(params: SignUpParams) {
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    if (error.code === "auth/email-already-in-use") {
+      return {
+        success: false,
+        message: "Email already in use",
+      };
+    }
     return {
       success: false,
-      message: "Database error",
+      message: "Failed to create user in database",
     };
   }
 }
 export async function signin(params: SignInParams) {
   try {
     const userRecord = await auth.getUserByEmail(params.email);
+    if(userRecord==null){
+      return {
+        success: false,
+        message: "User does not exist. Please sign up first",
+      };
+    }
 
     await setSessionCookies(params.idToken);
     return {
       success: true,
-      message: "User signed in successfully",
+      message: "you signed in successfully",
     };
   } catch (err) {
     console.log(err);
@@ -55,16 +75,13 @@ export async function setSessionCookies(idToken: string) {
   });
 }
 export async function getCurrentUser(): Promise<User | null> {
-  const cookieStore = cookies(); 
-  const sessionCookie = (await cookieStore).get("session")?.value;
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("session")?.value;
 
   if (!sessionCookie) return null;
 
   try {
-    const decodedClaims = await auth.verifySessionCookie(
-      sessionCookie,
-      true
-    );
+    const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
 
     const userRecord = await db
       .collection("users")
@@ -75,15 +92,13 @@ export async function getCurrentUser(): Promise<User | null> {
 
     return {
       ...userRecord.data(),
-      id: userRecord.id,
+      uid: decodedClaims.uid,
     } as User;
 
-  } catch (err) {
+  } 
+  catch (err) {
     console.log(err);
     return null;
   }
 }
-export async function isAuthenticated(){
-  const user=await getCurrentUser();
-  return !!user;
-}
+

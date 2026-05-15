@@ -10,66 +10,66 @@ const InterviewCard = ({
   id,
   role,
   type,
-  userId,
   techstack,
   createdAt,
 }: InterviewCardProps) => {
   const feedback = null as Feedback | null;
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
   const formattedDate = dayjs(
-    feedback?.createdAt || createdAt || Date.now()
+    feedback?.createdAt || createdAt || "2026-01-01T00:00:00Z"
   ).format("MMM D, YYYY");
-  const getRandomImage = () => {
-    return interviewImage[Math.floor(Math.random() * interviewImage.length)];
-  };
+  const imageIndex =
+    id.split("").reduce((total, character) => total + character.charCodeAt(0), 0) %
+    interviewImage.length;
   return (
     <div
-      className=" bg-gradient-to-r from-[#78441345] via-[#b7976d45] to-[#5b4d39]
-   shadow-xl max-sm:w-full max-w-[320px] min-h-72 rounded-[10px] py-.5 px-1 relative overflow-y-auto "
+      className="group relative min-h-72 w-full max-w-[500px] overflow-hidden rounded-[2rem] border border-primary/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.72),rgba(247,229,208,0.68)_55%,rgba(211,161,120,0.48))] p-1 shadow-[0_24px_60px_rgba(92,56,30,0.14)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(92,56,30,0.2)] sm:w-full"
     >
       <div
-        className="bg-gradient-to-t from-[#4f473e] via-[#be9255] to-[#eac087]
-       w-full h-72 p-2 shadow-xl rounded-[10px] my-1 "
+        className="relative flex h-full min-h-72 flex-col rounded-[1.7rem] border border-white/55 bg-[linear-gradient(180deg,rgba(78,45,25,0.96),rgba(147,90,48,0.95)_52%,rgba(233,196,148,0.94))] p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
       >
         <div
-          className=" absolute top-0 right-0 bg-gradient-to-r from-[#a88461]
-           to-[#d2b790] p-1 rounded-bl-lg"
+          className="absolute right-0 top-0 rounded-bl-2xl border-b border-l border-white/20 bg-[linear-gradient(135deg,#f7dab3,#d6a776)] px-4 py-2 text-right"
         >
-          <p className="text-md font-semibold">{normalizedType}</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-900">
+            {normalizedType}
+          </p>
         </div>
         <Image
-          src={getRandomImage()}
-          width={50}
-          height={50}
-          className="size-[65px] rounded object-fill rounded-full "
+          src={interviewImage[imageIndex]}
+          width={72}
+          height={72}
+          className="size-[72px] rounded-full border border-white/35 object-cover shadow-lg"
           alt="logo"
-        ></Image>
-        <h3 className=" text-lg font-stretch-50% mt-2">{role} Interview</h3>
-        <section className="flex gap-5 flex-wrap">
-          <p className="text-stone-300 ">{formattedDate}</p>
+        />
+        <h3 className="mt-5 font-[family-name:var(--font-montagu-slab)] text-2xl leading-tight text-white">
+          {role} Interview
+        </h3>
+        <section className="mt-3 flex flex-wrap gap-3">
+          <p className="rounded-full border border-white/16 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-stone-100/90">
+            {formattedDate}
+          </p>
           <div className="flex gap-2">
-            <p className="text-stone-50 text-sm">
+            <p className="rounded-full border border-white/16 bg-stone-950/18 px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-stone-50">
               Score: {feedback?.totalScore || "--"}/100
             </p>
           </div>
         </section>
 
-        <h4 className=" line-clamp-2 mt-1 text-sm font-semibold text-shadow-stone-600">
+        <h4 className="mt-4 line-clamp-3 max-w-md text-sm leading-6 text-stone-100/88">
           {feedback?.finalAssessment ||
-            "You havent taken the interview yet.Take it now to get feedback!"}
+            "You haven't taken the interview yet. Start now to get structured feedback and a clearer sense of your strengths."}
         </h4>
-      <div className="mt-4 flex place-items-center justify-between flex-wrap gap-2 mb-3">
-          <p>
+        <div className="mt-auto flex items-end justify-between gap-4 pt-6">
+          <div>
             <DisplayTechIcons techstack={techstack} />
-          </p>
+          </div>
           <Button
-            className="bg-amber-950 text-stone-300
-           hover:bg-amber-800 hover:scale-90"
+            className="rounded-full border border-white/15 bg-stone-950/70 px-5 text-stone-100 shadow-lg backdrop-blur-sm hover:scale-100 hover:bg-stone-950/85"
           >
             <Link
               href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
-              {" "}
               {feedback ? "View Feedback" : "Take Interview"}
             </Link>
           </Button>

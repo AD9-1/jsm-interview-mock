@@ -1,5 +1,5 @@
 import React from "react";
-import { cn, fetcher, getTechIcon } from "../lib/utils";
+import { fetcher} from "../lib/utils";
 import Image from "next/image";
 import clsx from "clsx";
 const DisplayTechIcons = async ({ techstack }: { techstack: string[] }) => {
@@ -12,7 +12,7 @@ const DisplayTechIcons = async ({ techstack }: { techstack: string[] }) => {
           key={item}
           className={clsx(
             "p-2 rounded-4xl group relative bg-[#241b30] border",
-            index > 0 && "-ml-3"
+            index > 0 && "-ml-1"
           )}//include -ml-3 only if index is greater than 0
         >
           <span
@@ -21,7 +21,7 @@ const DisplayTechIcons = async ({ techstack }: { techstack: string[] }) => {
           >
             {item}
           </span>
-          <Image src={url} width={12} height={20} alt={item}></Image>
+          <Image src={url} width={30} height={60} alt={item}></Image>
         </div>
       ))}
     </div>

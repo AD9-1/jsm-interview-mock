@@ -27,10 +27,10 @@ export default function Layout({
   return (
     <html lang="en" className="scheme-dark">
       <body
-        className={`${montaguSlab.className} antialiased bg-[url('/pattern1.jpg')] bg-cover`}
+        className={`${montaguSlab.variable} ${monaSans.variable} font-[family-name:var(--font-monaSans)] antialiased`}
       >
         {children}
-          <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

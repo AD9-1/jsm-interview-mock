@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { EyeIcon, EyeClosed } from "lucide-react";
 import { AuthFormData, AuthformSchema } from "@/zodutils/authFormSchema";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,11 +14,19 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase/client";
 import { signin, signup } from "@/lib/actions/auth.action";
-import { useState } from "react";
 import FormField from "./FormField";
 
+const getFirebaseErrorMessage = (error: unknown, fallback: string) => {
+  if (typeof error === "object" && error && "code" in error) {
+    const code = String(error.code);
+
+    if (code === "auth/email-already-in-use") return "Email already in use";
+  }
+
+  return fallback;
+};
+
 const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
-  const [showPass, setShowPass] = useState(true);
   const form = useForm<AuthFormData>({
     resolver: zodResolver(AuthformSchema({ type })),
     defaultValues: {
@@ -45,17 +52,16 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
           password: data.password,
         });
         console.log(record);
-        if (record.success !== true) {
-          toast.error("Failed to create account in database");
+        if (record?.success !== true) {
+          toast.error(record?.message||"Failed to create account in database");
           return;
         }
         toast.success("Account created in database.Please sign in");
         router.push("/auth/sign-in");
-      } catch (error: any) {
-        if (error.code === "auth/email-already-in-use") {
-          toast.error("Email already in use");
-          console.error(error);
-        } else toast.error("Failed to create account in database");
+      } catch (error: unknown) {
+        toast.error(
+          getFirebaseErrorMessage(error, "Failed to create account in database"),
+        );
       }
     } else {
       const { email, password } = data;
@@ -74,77 +80,84 @@ const AuthForm = ({ type }: { type: "sign-in" | "sign-up" }) => {
         } else {
           toast.error(record.message);
         }
-      } catch (error: any) {
+      } catch {
         toast.error("Failed to sign-in");
       }
     }
   };
+
+  const isSignIn = type === "sign-in";
   return (
-    <div className="w-md border border-2 rounded-md p-1 lg:w-1/2">
-      <div className="bg-gradient-to-l from-gray-400 via-gray-400 to bg-gray-500 p-2 rounded-xl p-4">
-        <div className="flex items-center justify-center">
-          <Image
-            src="/microphone.png"
-            height={20}
-            width={55}
-            alt="Microphone"
-          />
-          <h1 className="text-xl font-semibold text-center text-gray-900">
-            {type === "sign-in" ? " Sign In" : " Sign Up"}
-          </h1>
+    <div className="panel w-full max-w-xl overflow-hidden p-2">
+      <div className="rounded-[1.75rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,250,245,0.96),rgba(247,229,209,0.95))] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] sm:p-8">
+        <div className="mb-6 flex items-center justify-center gap-3">
+          <div className="rounded-2xl bg-white/80 p-3 shadow-sm">
+            <Image
+              src="/microphone.png"
+              height={20}
+              width={42}
+              alt="Microphone"
+            />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary/60">
+              MockWise
+            </p>
+            <h1 className="font-[family-name:var(--font-montagu-slab)] text-3xl font-semibold text-gray-900">
+              {isSignIn ? "Sign In" : "Sign Up"}
+            </h1>
+          </div>
         </div>
-        <h3 className="text-lg  md:text-2xl font-medium text-center">
-          Practice job interview with AI
-        </h3>
+        <div className="mb-8 text-center">
+          <h3 className="text-lg font-medium text-foreground/80 sm:text-xl">
+            Practice job interviews with AI
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-foreground/60">
+            Access guided mock sessions, sharpen your answers, and keep your prep in one place.
+          </p>
+        </div>
 
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 mt-2"
+            className="space-y-5"
           >
             {type === "sign-up" && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  label="Name"
-                  placeholder="Your name"
-                 
-                />
-              
-              </>
+              <FormField
+                control={form.control}
+                name="name"
+                label="Name"
+                placeholder="Your name"
+              />
             )}
             <FormField
-                  control={form.control}
-                  name="email"
-                  label="Email"
-                  placeholder="Your email"
-                  type="email"
-                 
-                />
-         <FormField
-                  control={form.control}
-                  name="password"
-                  label="Password"
-                  placeholder="Your password"
-                  type="password"
-                 
-                />
-            <button className="btn" type="submit">
-              {type === "sign-up" ? "Sign Up" : "Sign In"}
+              control={form.control}
+              name="email"
+              label="Email"
+              placeholder="Your email"
+              type="email"
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              label="Password"
+              placeholder="Your password"
+              type="password"
+            />
+            <button className="btn mt-2" type="submit">
+              {isSignIn ? "Sign In" : "Create Account"}
             </button>
           </form>
         </Form>
-        <p className="text-center mt-2 text-gray-800">
-          {type === "sign-in"
-            ? "Don't have an account?"
-            : "Already have an account?"}
-          <span>
+
+        <p className="mt-6 text-center text-sm text-foreground/70">
+          {isSignIn ? "Don't have an account?" : "Already have an account?"}
+          <span className="ml-2">
             <Link
-              href={type === "sign-in" ? "/auth/sign-up" : "/auth/sign-in"}
-              className=" font-semibold"
+              href={isSignIn ? "/auth/sign-up" : "/auth/sign-in"}
+              className="font-semibold text-primary transition hover:text-primary/80"
             >
-              {type === "sign-in" ? " Sign Up" : " Sign In"}
+              {isSignIn ? "Sign Up" : "Sign In"}
             </Link>
           </span>
         </p>
