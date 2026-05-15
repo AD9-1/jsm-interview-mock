@@ -1,6 +1,12 @@
+import { getCurrentUser } from "@/lib/actions/auth.action";
+import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
 const AuthLayout = async ({ children }: { children: ReactNode }) => {
+   const currentUser = await getCurrentUser();
+    if (currentUser!== null) redirect("/");
+    console.log("current user in layout", currentUser);
+  
   return (
     <main className=" min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="grid w-full items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">

@@ -1,4 +1,4 @@
-import { getCurrentUser, isAuthenticated } from "@/lib/actions/auth.action";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
