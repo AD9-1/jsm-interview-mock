@@ -7,7 +7,7 @@ import { FcAssistant } from "react-icons/fc";
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const currentUser = await getCurrentUser();
   if (currentUser === null) redirect("/auth/sign-in");
-  console.log("current user in layout", currentUser);
+
 
   return (
     <div className="mx-auto min-h-screen max-w-7xl px-4 py-5 sm:px-6 lg:px-8">

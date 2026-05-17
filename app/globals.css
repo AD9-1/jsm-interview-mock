@@ -119,24 +119,42 @@
   }
   html {
     scroll-behavior: smooth;
-   
   }
   body {
     @apply min-h-screen bg-background text-foreground;
     background-image:
       radial-gradient(circle at top, rgba(255, 248, 233, 0.92)),
       linear-gradient(135deg, rgba(116, 63, 34, 0.08), transparent 36%),
-      linear-gradient(180deg, #f7ecdc 0%, #edd4bc 46%, #d5ab87 100%); 
+      linear-gradient(180deg, #f7ecdc 0%, #edd4bc 46%, #d5ab87 100%);
     background-attachment: fixed;
   }
 }
 
 @layer components {
+  @keyframes outline-glow {
+    0% {
+      outline-color: rgba(235, 160, 22, 0.45);
+    }
+
+    50% {
+      outline-color: rgb(111, 79, 16);
+    }
+
+    100% {
+      outline-color: rgba(227, 212, 48, 0.45);
+    }
+  }
+
+  .speaking-ring {
+   
+    animation: outline-glow 1.5s ease-in-out infinite;
+  }
+
   .btn {
     @apply inline-flex w-full items-center justify-center rounded-full border border-amber-950/15 bg-[linear-gradient(135deg,#5b2d15,#8d5b36_55%,#c08952)] px-5 py-3 font-semibold text-primary-foreground shadow-[0_16px_40px_rgba(73,37,16,0.2)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_46px_rgba(73,37,16,0.28)];
   }
 
   .panel {
-    @apply rounded-[2rem] border border-white/45  border-white/68  shadow-[0_24px_70px_rgba(92,56,30,0.14)] ;
+    @apply rounded-[2rem] border border-white/45  border-white/68  shadow-[0_24px_70px_rgba(92,56,30,0.14)];
   }
 }
