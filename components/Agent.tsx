@@ -6,7 +6,7 @@ enum CallStatus {
   CONNECTING = "CONNECTING",
   FINISHED = "FINISHED",
 }
-const Agent = ({ name }: SignUpParams) => {
+const Agent = ({ name }: any) => {
   const isSpeaking = true;
   const messages = [
     "what is your name ?",

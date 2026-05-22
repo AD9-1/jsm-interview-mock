@@ -9,6 +9,12 @@ interface Interview {
   type: string;
   finalized: boolean;
 }
+ interface AppUser {
+  uid: string;
+  name: string;
+  email: string;
+}
+
 interface InterviewCardProps {
   id: string;
   role: string;
