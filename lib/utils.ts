@@ -5,14 +5,26 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+const interviewCoverImages = [
+  "amazon.jpg",
+  "facebook.png",
+  "instagram.png",
+  "microsoft.png",
+  "musigma.jpg",
+  "quora.png",
+  "reddit.jpg",
+  "Revi.png",
+  "teams.png",
+  "twitter.png"
+];
 const techIcons = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
 
 const iconsMap = (tech: string) => {
   const k = tech.toLowerCase().replace(/\.js$/, "").replace(/\s+/g, "");
-  console.log("from iconsMap",mappings[k as keyof typeof mappings]);
+  console.log("from iconsMap", mappings[k as keyof typeof mappings]);
   return mappings[k as keyof typeof mappings];
 };
-// 
+//
 export const fetcher = async (techArray: string[]) => {
   const icons = techArray.map((tech) => iconsMap(tech));
   return icons.map((item) => {
@@ -22,3 +34,8 @@ export const fetcher = async (techArray: string[]) => {
     };
   });
 };
+
+export function getRandomInterviewCoverImage() {
+  const index = Math.floor(Math.random() * interviewCoverImages.length);
+  return `/covers/${interviewCoverImages[index]}`;
+}
