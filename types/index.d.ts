@@ -9,11 +9,6 @@ interface Interview {
   type: string;
   finalized: boolean;
 }
- interface AppUser {
-  uid: string;
-  name: string;
-  email: string;
-}
 
 interface InterviewCardProps {
   id: string;
@@ -46,4 +41,19 @@ interface Feedback {
   areasForImprovement: string[];
   finalAssessment: string;
   createdAt: string;
+}
+interface AgentProps {
+  userName?: string;
+  userId?: string;
+  type: "generate" | "mock";
+}
+interface Transcript {
+role: "user" | "agent";
+content: string;
+}
+interface Message {
+  type: string;
+  transcriptType: string;
+  role: "user" | "agent";
+  transcript: string;
 }

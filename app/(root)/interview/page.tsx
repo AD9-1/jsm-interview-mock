@@ -1,13 +1,14 @@
 import Agent from "@/components/Agent";
 import { getCurrentUser } from "@/lib/actions/auth.action";
-import { User } from "firebase/auth";
+
 
 const Page = async () => {
-  const record: AppUser | null = await getCurrentUser();
-  console.log("from page.tsx", record);
+const user=await getCurrentUser();
+
   return (
     <div>
-      <Agent name={record?.name} />
+      <h3>Interview Generation</h3>
+      <Agent userName={user?.name} userId={user?.uid } type="generate"/>
     </div>
   );
 };

@@ -74,7 +74,7 @@ export async function setSessionCookies(idToken: string) {
     secure: process.env.NODE_ENV === "production",
   });
 }
-export async function getCurrentUser(): Promise<AppUser | null> {
+export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("session")?.value;
 
@@ -93,7 +93,7 @@ export async function getCurrentUser(): Promise<AppUser | null> {
     return {
       ...userRecord.data(),
       uid: decodedClaims.uid,
-    } as AppUser;
+    } as User;
 
   } 
   catch (err) {
