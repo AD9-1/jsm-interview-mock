@@ -2,8 +2,8 @@
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 enum CallStatus {
   IDLE = "IDLE",
@@ -11,26 +11,47 @@ enum CallStatus {
   CONNECTING = "CONNECTING",
   FINISHED = "FINISHED",
 }
+
 const Agent = ({ userName, userId, type }: AgentProps) => {
   const router = useRouter();
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
+  const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.IDLE);
   const [messages, setMessages] = useState<Transcript[]>([]);
-  const lastMessage = messages[messages.length - 1];
+  let speakingUser: ReturnType<typeof setTimeout> | null = null;
+  const latestMessage = messages[messages.length - 1]?.content;
+
+
+
 
   useEffect(() => {
     const callStart = () => setCallStatus(CallStatus.ACTIVE);
     const callEnd = () => setCallStatus(CallStatus.FINISHED);
     const onMessage = (message: Message) => {
+      if (message.type === "transcript" && message.role === "user") {
+        setIsUserSpeaking(true);
+
+           if (speakingUser) {
+           clearTimeout(speakingUser);
+           }
+
+      
+        speakingUser = setTimeout(() => {
+          setIsUserSpeaking(false);
+        }, 100);
+      }
+
       if (message.type === "transcript" && message.transcriptType === "final") {
         const newMessage = { role: message.role, content: message.transcript };
         setMessages((prev) => [...prev, newMessage]);
       }
     };
-    const speechStart = () => setIsSpeaking(true);
-    const speechEnd = () => setIsSpeaking(false);
-    const onError = (error: any) =>
+    const speechStart = () => setIsAgentSpeaking(true);
+    const speechEnd = () => setIsAgentSpeaking(false);
+    const onError = (error: unknown) => {
+      setCallStatus(CallStatus.FINISHED);
       console.error(" error happens in Agent component:", error);
+    };
     vapi.on("call-start", callStart);
     vapi.on("call-end", callEnd);
     vapi.on("message", onMessage);
@@ -45,34 +66,64 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
       vapi.off("speech-start", speechStart);
       vapi.off("speech-end", speechEnd);
       vapi.off("error", onError);
+      clearTimeout(speakingUser!);
     };
+
+
   }, []);
+
+
+
+
+
   useEffect(() => {
     if (callStatus === CallStatus.FINISHED) {
-      setTimeout(() => router.push("/interview/id"), 3000);
+      const timeoutId = setTimeout(() => router.push("/interview/id"), 1000);
+
+      return () => clearTimeout(timeoutId);
     }
-    //  if (callStatus === CallStatus.FINISHED) {
-    //   setTimeout(() => router.push("/"), 3000);
-    // }
-    const connectedCall = async () => {
-      setCallStatus(CallStatus.CONNECTING);
-      try {
-        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID);
-      } catch (error) {
-        console.log(
-          "Cannot start the call,there must be importing issue of workflow-id : ",
-          error,
-        );
-        setCallStatus(CallStatus.IDLE);
-      }
-    };
-  }, [type, callStatus, userId]);
+  }, [type, callStatus, router, userId]);
+
+  const connectedCall = async () => {
+    setCallStatus(CallStatus.CONNECTING);
+    setTimeout(() => {
+      setCallStatus(CallStatus.ACTIVE);
+    }, 3000);
+    try {
+      await vapi.start(
+        undefined,
+        undefined,
+        undefined,
+        process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID,
+        {
+          variableValues: {
+            username: userName,
+            userid: userId,
+          },
+        },
+      );
+    } catch (error) {
+      setCallStatus(CallStatus.FINISHED);
+
+      console.log(
+        "Cannot start the call,there must be importing issue of workflow-id : ",
+        error,
+      );
+    }
+  };
+  const disconnectedCall = async () => {
+    setCallStatus(CallStatus.FINISHED);
+    vapi.stop();
+  };
+
+  const isCallIdleOrFinished =
+    CallStatus.IDLE === callStatus || CallStatus.FINISHED === callStatus;
   return (
     <>
       <div className="flex flex-col gap-6 md:flex-row md:justify-center md:items-center">
         <div className="max-w-full  md:min-w-[320px] lg:w-[400px] border border-1  bg-gradient-to-b from-[rgba(191,102,23,0.54)] to-[rgba(219,200,22,0.11)] rounded-[1.75rem] p-6 shadow-[rgba(255,255,255,0.7)]">
           <div
-            className={`w-fit mx-auto rounded-full p-1 border-2 border-[#644e2a] ${isSpeaking ? "speaking-ring" : ""}`}
+            className={`w-fit mx-auto rounded-full p-1 border-2 border-[#644e2a] ${isAgentSpeaking ? "speaking-ring" : ""}`}
           >
             <Image
               src="/ai-avatar.jpg"
@@ -88,7 +139,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         </div>
         <div className="max-w-full md:min-w-[320px] lg:w-[400px] border border-1  bg-gradient-to-b from-[rgba(230,124,32,0.54)] to-[rgba(208,171,59,0.75)] rounded-[1.75rem] p-6 shadow-[rgba(255,255,255,0.7)]">
           <div
-            className={`w-fit mx-auto rounded-full p-1 border-2 border-[#644e2a] ${isSpeaking ? "speaking-ring" : ""}`}
+            className={`w-fit mx-auto rounded-full p-1 border-2 border-[#644e2a] ${isUserSpeaking ? "speaking-ring" : ""}`}
           >
             <Image
               src="/ai-avatar.jpg"
@@ -104,31 +155,41 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         </div>
       </div>
       <div className="w-full flex justify-center mt-3">
-        {CallStatus.IDLE === "IDLE" ? (
-          <button className="px-4 py-2 rounded-lg bg-green-700 text-white tracking-wider text-xl">
-            {CallStatus.FINISHED === "CONNECTING" ? (
-              "Call"
-            ) : (
-              <div className="flex gap-1 py-3 px-4">
-                <div
-                  className="w-2 h-2 bg-white rounded-full animate-bounce"
-                  style={{ animationDelay: ".5s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-white rounded-full animate-bounce"
-                  style={{ animationDelay: ".7s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-white rounded-full animate-bounce"
-                  style={{ animationDelay: ".14s" }}
-                ></div>
-              </div>
-            )}
+        {callStatus === "IDLE" ? (
+          <button
+            className="px-4 py-2 rounded-lg bg-green-700 text-white tracking-wider text-xl"
+            onClick={connectedCall}
+          >
+            {isCallIdleOrFinished ? "Call" : <></>}
           </button>
         ) : (
-          <button className="px-4 py-2 rounded-lg bg-red-700 text-white tracking-wider text-xl">
-            End
-          </button>
+          <>
+            {callStatus === "CONNECTING" ? (
+              <button className="px-4 py-2 rounded-lg bg-green-700">
+                <div className="flex gap-1 py-3 px-4">
+                  <div
+                    className="w-2 h-2 bg-white rounded-full animate-bounce"
+                    style={{ animationDelay: ".5s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-white rounded-full animate-bounce"
+                    style={{ animationDelay: ".7s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-white rounded-full animate-bounce"
+                    style={{ animationDelay: ".14s" }}
+                  ></div>
+                </div>
+              </button>
+            ) : (
+              <button
+                className="px-4 py-2 rounded-lg bg-red-700 text-white tracking-wider text-xl"
+                onClick={disconnectedCall}
+              >
+                End
+              </button>
+            )}
+          </>
         )}
       </div>
       {messages.length > 0 && (
@@ -139,7 +200,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
               `animate-fadeIn opacity-100`,
             )}
           >
-            {lastMessage}
+            {latestMessage}
           </p>
         </section>
       )}
