@@ -19,7 +19,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.IDLE);
   const [messages, setMessages] = useState<Transcript[]>([]);
 
-
+const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const callStart = () => setCallStatus(CallStatus.ACTIVE);
@@ -107,7 +107,9 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     setCallStatus(CallStatus.FINISHED);
     vapi.stop();
   };
-
+useEffect(() => {
+  chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [messages]);
   return (
     <>
       <div className="flex flex-col gap-6 md:flex-row md:justify-center md:items-center">
@@ -193,7 +195,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
             )
           })}
         </div>
-
+        <div ref={chatEndRef} />
         </section>
       )}
     </>
