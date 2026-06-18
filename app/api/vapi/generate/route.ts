@@ -29,13 +29,15 @@ Thank you in advance!`,
       questions: questions.split(",").map((q:string)=>q.trim()),
       role: body.role,
       techstack: body.techstack,
-      type: body.type?? "balanced",
+      type: body.type?? "mixed",
       level: body.level ?? "mid-senior",
       userId: body.userid,
      finalized: true,
      coverImage:getRandomInterviewCoverImage(),
         createdAt: new Date().toISOString(),
     };
+
+    console.log("Generated interview:", interview);
     await db.collection("interviews").add(interview);
     return Response.json({ success: true, data: interview }, { status: 200 });
   } catch (error) {

@@ -5,8 +5,15 @@ import React from "react";
 
 import { dummyInterviews } from "@/constants/index.t";
 import InterviewCard from "@/components/InterviewCard";
+import { getCurrentUser, getInterviewQuestionsbyUserId } from "@/lib/actions/auth.action";
 
-const RootPage = () => {
+const RootPage = async() => {
+  const user=await getCurrentUser();
+  
+  const userId=user?.uid;
+  const interviews = userId ? await getInterviewQuestionsbyUserId(userId) : [];
+  console.log("interviews in page.tsx", interviews);
+
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-[2.25rem] border border-primary/10 bg-[linear-gradient(135deg,rgba(255,251,245,0.9),rgba(249,226,199,0.92)_48%,rgba(205,152,110,0.82))] px-6 py-8 shadow-[0_30px_90px_rgba(101,58,31,0.16)] md:px-10 md:py-12">

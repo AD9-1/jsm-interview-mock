@@ -48,12 +48,12 @@ interface AgentProps {
   type: "generate" | "mock";
 }
 interface Transcript {
-role: "user" | "agent";
+role: string;
 content: string;
 }
 interface Message {
   type: string;
   transcriptType: string;
-  role: "user" | "agent";
+  role: string;
   transcript: string;
 }

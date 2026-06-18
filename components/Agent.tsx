@@ -18,34 +18,33 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.IDLE);
   const [messages, setMessages] = useState<Transcript[]>([]);
-  let speakingUser: ReturnType<typeof setTimeout> | null = null;
-  const latestMessage = messages[messages.length - 1]?.content;
-
 
 
 
   useEffect(() => {
     const callStart = () => setCallStatus(CallStatus.ACTIVE);
     const callEnd = () => setCallStatus(CallStatus.FINISHED);
-    const onMessage = (message: Message) => {
-      if (message.type === "transcript" && message.role === "user") {
-        setIsUserSpeaking(true);
 
-           if (speakingUser) {
-           clearTimeout(speakingUser);
-           }
-
+    const onMessage = (conversation: any) => {
       
-        speakingUser = setTimeout(() => {
-          setIsUserSpeaking(false);
-        }, 100);
+      if (conversation.role === "user") {
+        setIsUserSpeaking(true);
+      } else if (conversation.role === "assistant") {
+        setIsUserSpeaking(false);
       }
 
-      if (message.type === "transcript" && message.transcriptType === "final") {
-        const newMessage = { role: message.role, content: message.transcript };
+      if (
+        conversation.type === "transcript" &&
+        conversation.transcriptType === "final"
+      ) {
+        const newMessage = {
+          role: conversation.role,
+          content: conversation.transcript,
+        };
         setMessages((prev) => [...prev, newMessage]);
       }
     };
+
     const speechStart = () => setIsAgentSpeaking(true);
     const speechEnd = () => setIsAgentSpeaking(false);
     const onError = (error: unknown) => {
@@ -66,15 +65,8 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
       vapi.off("speech-start", speechStart);
       vapi.off("speech-end", speechEnd);
       vapi.off("error", onError);
-      clearTimeout(speakingUser!);
     };
-
-
   }, []);
-
-
-
-
 
   useEffect(() => {
     if (callStatus === CallStatus.FINISHED) {
@@ -88,7 +80,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     setCallStatus(CallStatus.CONNECTING);
     setTimeout(() => {
       setCallStatus(CallStatus.ACTIVE);
-    }, 3000);
+    }, 0);
     try {
       await vapi.start(
         undefined,
@@ -97,7 +89,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID,
         {
           variableValues: {
-            username: userName,
+            username: userName?.split(" ")[0],
             userid: userId,
           },
         },
@@ -116,8 +108,6 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     vapi.stop();
   };
 
-  const isCallIdleOrFinished =
-    CallStatus.IDLE === callStatus || CallStatus.FINISHED === callStatus;
   return (
     <>
       <div className="flex flex-col gap-6 md:flex-row md:justify-center md:items-center">
@@ -160,11 +150,11 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
             className="px-4 py-2 rounded-lg bg-green-700 text-white tracking-wider text-xl"
             onClick={connectedCall}
           >
-            {isCallIdleOrFinished ? "Call" : <></>}
+            {callStatus === CallStatus.IDLE|| callStatus === CallStatus.FINISHED ? "Call" : <></>}
           </button>
         ) : (
           <>
-            {callStatus === "CONNECTING" ? (
+            {callStatus === CallStatus.CONNECTING ? (
               <button className="px-4 py-2 rounded-lg bg-green-700">
                 <div className="flex gap-1 py-3 px-4">
                   <div
@@ -193,15 +183,17 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         )}
       </div>
       {messages.length > 0 && (
-        <section className="mt-6 w-full md:w-2/5 mx-auto top-side-glow rounded ">
-          <p
-            className={cn(
-              ` p-3 transition-opacity duration-500 opacity-0`,
-              `animate-fadeIn opacity-100`,
-            )}
-          >
-            {latestMessage}
-          </p>
+        <section className="mt-6 w-full md:w-3/4 mx-auto top-side-glow rounded ">
+        <div className="max-h-44 overflow-y-auto  p-6">
+          {messages.map((m,index)=>{
+            return(
+            <p key={index} className="mb-1">
+              <strong>{m.role==="user" ? "You" : "Pawnee"} : </strong> {m.content}
+            </p>
+            )
+          })}
+        </div>
+
         </section>
       )}
     </>

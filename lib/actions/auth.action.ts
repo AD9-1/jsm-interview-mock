@@ -40,7 +40,7 @@ export async function signup(params: SignUpParams) {
 export async function signin(params: SignInParams) {
   try {
     const userRecord = await auth.getUserByEmail(params.email);
-    if(userRecord==null){
+    if (userRecord == null) {
       return {
         success: false,
         message: "User does not exist. Please sign up first",
@@ -94,11 +94,23 @@ export async function getCurrentUser(): Promise<User | null> {
       ...userRecord.data(),
       uid: decodedClaims.uid,
     } as User;
-
-  } 
-  catch (err) {
+  } catch (err) {
     console.log(err);
     return null;
   }
 }
 
+export async function getInterviewQuestionsbyUserId(
+  userId: string,
+): Promise<Interview[]> {
+  const interviewsSnapshot = await db
+    .collection("interviews")
+    .where("userId", "==", userId)
+    .get();
+  console.log("interviewsSnapshot in auth.action.ts", interviewsSnapshot.docs);
+
+  const interviews: Interview[] = interviewsSnapshot.docs.map((doc) => {
+    return { id: doc.id, ...(doc.data() as Omit<Interview, "id">) };
+  });
+  return interviews;
+}
