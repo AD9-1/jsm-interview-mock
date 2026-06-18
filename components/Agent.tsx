@@ -19,14 +19,13 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.IDLE);
   const [messages, setMessages] = useState<Transcript[]>([]);
 
-const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const callStart = () => setCallStatus(CallStatus.ACTIVE);
     const callEnd = () => setCallStatus(CallStatus.FINISHED);
 
     const onMessage = (conversation: any) => {
-      
       if (conversation.role === "user") {
         setIsUserSpeaking(true);
       } else if (conversation.role === "assistant") {
@@ -41,7 +40,19 @@ const chatEndRef = useRef<HTMLDivElement>(null);
           role: conversation.role,
           content: conversation.transcript,
         };
-        setMessages((prev) => [...prev, newMessage]);
+        setMessages((prev) => {
+          let last = prev[prev.length - 1];
+          if (last?.role == newMessage.role) {
+            const updated = {
+              ...last,
+              content: `${last.content} ${newMessage.content}`,
+            };
+
+            return [...prev.slice(0, -1), updated];
+          } 
+            return [...prev, newMessage];
+          
+        });
       }
     };
 
@@ -68,19 +79,9 @@ const chatEndRef = useRef<HTMLDivElement>(null);
     };
   }, []);
 
-  useEffect(() => {
-    if (callStatus === CallStatus.FINISHED) {
-      const timeoutId = setTimeout(() => router.push("/interview/id"), 1000);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [type, callStatus, router, userId]);
-
   const connectedCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
-    setTimeout(() => {
-      setCallStatus(CallStatus.ACTIVE);
-    }, 0);
+   
     try {
       await vapi.start(
         undefined,
@@ -105,11 +106,12 @@ const chatEndRef = useRef<HTMLDivElement>(null);
   };
   const disconnectedCall = async () => {
     setCallStatus(CallStatus.FINISHED);
+    setTimeout(() => router.push("/interview/id"), 1000);
     vapi.stop();
   };
-useEffect(() => {
-  chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-}, [messages]);
+  useEffect(() => {
+    chatEndRef.current?.scrollBy({ behavior: "smooth" });
+  }, [messages]);
   return (
     <>
       <div className="flex flex-col gap-6 md:flex-row md:justify-center md:items-center">
@@ -152,7 +154,12 @@ useEffect(() => {
             className="px-4 py-2 rounded-lg bg-green-700 text-white tracking-wider text-xl"
             onClick={connectedCall}
           >
-            {callStatus === CallStatus.IDLE|| callStatus === CallStatus.FINISHED ? "Call" : <></>}
+            {callStatus === CallStatus.IDLE ||
+            callStatus === CallStatus.FINISHED ? (
+              "Call"
+            ) : (
+              <></>
+            )}
           </button>
         ) : (
           <>
@@ -186,16 +193,17 @@ useEffect(() => {
       </div>
       {messages.length > 0 && (
         <section className="mt-6 w-full md:w-3/4 mx-auto top-side-glow rounded ">
-        <div className="max-h-44 overflow-y-auto  p-6">
-          {messages.map((m,index)=>{
-            return(
-            <p key={index} className="mb-1">
-              <strong>{m.role==="user" ? "You" : "Adrian"} : </strong> {m.content}
-            </p>
-            )
-          })}
-        </div>
-        <div ref={chatEndRef} />
+          <div className="max-h-44 overflow-y-auto  p-6">
+            {messages.map((m, index) => {
+              return (
+                <p key={index} className="mb-1">
+                  <strong>{m.role === "user" ? "You" : "Adrian"} : </strong>{" "}
+                  {m.content}
+                </p>
+              );
+            })}
+          </div>
+          <div ref={chatEndRef} />
         </section>
       )}
     </>
