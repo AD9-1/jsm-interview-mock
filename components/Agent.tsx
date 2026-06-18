@@ -188,7 +188,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
           {messages.map((m,index)=>{
             return(
             <p key={index} className="mb-1">
-              <strong>{m.role==="user" ? "You" : "Pawnee"} : </strong> {m.content}
+              <strong>{m.role==="user" ? "You" : "Adrian"} : </strong> {m.content}
             </p>
             )
           })}
