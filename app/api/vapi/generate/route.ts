@@ -9,7 +9,7 @@ export async function GET() {
 }
 export async function POST(request: Request) {
   console.log("POST /api/vapi/generate called");
-
+console.log("Request body:", await request.text()); // Log the raw request body for debugging
   try {
     const body = await request.json();
     const response = await generateText({
