@@ -9,9 +9,10 @@ export async function GET() {
 }
 export async function POST(request: Request) {
   console.log("POST /api/vapi/generate called");
-console.log("Request body:", await request.json()); // Log the raw request body for debugging
+// Log the raw request body for debugging
   try {
     const body = await request.json();
+    console.log("Request body:", body);
     const response = await generateText({
       model: google("gemini-2.5-flash-lite"),
       prompt: `Prepare questions for a job interview.
