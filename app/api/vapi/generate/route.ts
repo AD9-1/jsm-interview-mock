@@ -31,7 +31,7 @@ Thank you in advance!`,
     const interview = {
       questions: questions.split(",").map((q: string) => q.trim()),
       role: body.role,
-      techstack: body.techstack,
+      techstackArray: body.techstack.split(",").map((t:string)=>t.trim()),
       type: body.type ?? "mixed",
       level: body.level ?? "mid-senior",
       userId: body.userid,
@@ -44,7 +44,7 @@ Thank you in advance!`,
     // await db.collection("interviews").add(interview);
     const docRef = await addDoc(collection(db, "interviews"), interview);
     return Response.json(
-      { success: true, data: interview, InterviewId: docRef.id },
+      { success: true, InterviewContent: interview, InterviewId: docRef.id },
       { status: 200 },
     );
   } catch (error) {
