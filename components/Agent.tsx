@@ -128,7 +128,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
             />
           </div>
           <h3 className="mt-4 text-center font-[family-name:var(--font-montagu-slab)] text-shadow-blue-300 font-bold">
-            AI Interviewer
+           Adrian
           </h3>
         </div>
         <div className="max-w-full md:min-w-[320px] lg:w-[400px] border border-1  bg-gradient-to-b from-[rgba(230,124,32,0.54)] to-[rgba(208,171,59,0.75)] rounded-[1.75rem] p-6 shadow-[rgba(255,255,255,0.7)]">
