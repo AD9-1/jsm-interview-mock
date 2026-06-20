@@ -9,14 +9,14 @@ export async function GET() {
 }
 export async function POST(request: Request) {
   console.log("POST /api/vapi/generate called");
-console.log("Request body:", await request.text()); // Log the raw request body for debugging
+console.log("Request body:", await request.json()); // Log the raw request body for debugging
   try {
     const body = await request.json();
     const response = await generateText({
       model: google("gemini-2.5-flash-lite"),
       prompt: `Prepare questions for a job interview.
 The job role is ${body.role}.
-The techstack used in this job is ${body.techstack}.
+The techstack used in this job is ${ body.techstack.split(",").map((t:string)=>t.trim()) }.
 The focus between behavioural and technical questions is ${body.type}.
 The amount of questions required: ${body.amount}.
 The job experience level is ${body.level}.
@@ -31,7 +31,7 @@ Thank you in advance!`,
     const interview = {
       questions: questions.split(",").map((q: string) => q.trim()),
       role: body.role,
-      techstackArray: body.techstack.split(",").map((t:string)=>t.trim()),
+      techstack: body.techstack?.split(",").map((t:string)=>t.trim()),
       type: body.type ?? "mixed",
       level: body.level ?? "mid-senior",
       userId: body.userid,
