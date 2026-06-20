@@ -2,6 +2,7 @@ interface Interview {
   id: string;
   role: string;
   level: string;
+  amount: number;
   questions: string[];
   techstack: string[];
   createdAt: string;
