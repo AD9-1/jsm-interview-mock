@@ -3,14 +3,17 @@ import { google } from "@ai-sdk/google";
 import { getRandomInterviewCoverImage } from "@/lib/utils";
 import { db } from "@/firebase/client";
 import { addDoc, collection } from "firebase/firestore";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 
 export async function GET() {
   return Response.json({ success: true, data: "Thank You!" }, { status: 200 });
 }
 export async function POST(request: Request) {
   console.log("POST /api/vapi/generate called");
-// Log the raw request body for debugging
+
   try {
+    const user=await getCurrentUser();
+    const userId=user?.uid;
     const body = await request.json();
     console.log("Request body:", body);
     const response = await generateText({
@@ -35,7 +38,7 @@ Thank you in advance!`,
       techstack: body.techstack?.split(",").map((t:string)=>t.trim()),
       type: body.type ?? "mixed",
       level: body.level ?? "mid-senior",
-      userId: body.userid,
+      userId: userId,
       finalized: true,
       coverImage: getRandomInterviewCoverImage(),
       createdAt: new Date().toISOString(),
