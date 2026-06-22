@@ -13,6 +13,7 @@ export async function POST(request: Request) {
 
   try {
     const user=await getCurrentUser();
+    console.log("Current user in generate route:", user?.uid);
     const userId=user?.uid;
     const body = await request.json();
     console.log("Request body:", body);
