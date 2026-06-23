@@ -18,6 +18,7 @@ interface InterviewCardProps {
   techstack: string[];
   type: string;
   createdAt: string;
+  coverImage: string;
 }
 interface SignInParams {
   email: string;

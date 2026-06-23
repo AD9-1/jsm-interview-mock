@@ -107,7 +107,7 @@ export async function getInterviewQuestionsbyUserId(
     .collection("interviews")
     .where("userId", "==", userId)
     .get();
-  console.log("interviewsSnapshot in auth.action.ts", interviewsSnapshot.docs);
+ 
 
   const interviews: Interview[] = interviewsSnapshot.docs.map((doc) => {
     return { id: doc.id, ...(doc.data() as Omit<Interview, "id">) };

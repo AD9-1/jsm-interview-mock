@@ -5,14 +5,20 @@ import React from "react";
 
 import { dummyInterviews } from "@/constants/index.t";
 import InterviewCard from "@/components/InterviewCard";
-import { getCurrentUser, getInterviewQuestionsbyUserId } from "@/lib/actions/auth.action";
+import {
+  getCurrentUser,
+  getInterviewQuestionsbyUserId,
+} from "@/lib/actions/auth.action";
 
-const RootPage = async() => {
-  const user=await getCurrentUser();
-  
-  const userId=user?.uid;
-  const interviews = userId ? await getInterviewQuestionsbyUserId(userId) : [];
-  console.log("interviews in page.tsx", interviews);
+const RootPage = async () => {
+  const user = await getCurrentUser();
+
+  const userId = user?.uid;
+  const userInterviews = userId
+    ? await getInterviewQuestionsbyUserId(userId!)
+    : [];
+  console.log("interviews in page.tsx", userInterviews);
+  const hasPastInterviews = userInterviews?.length > 0;
 
   return (
     <div className="space-y-8">
@@ -24,7 +30,7 @@ const RootPage = async() => {
               Your Interview Lab
             </p>
             <h1 className="font-[family-name:var(--font-montagu-slab)] text-4xl leading-tight text-foreground sm:text-5xl md:text-6xl">
-            Ace your interviews with AI-powered practice
+              Ace your interviews with AI-powered practice
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-foreground/72 md:text-xl">
               Practice with focused mock interviews, build consistency, and walk
@@ -43,7 +49,6 @@ const RootPage = async() => {
               </div>
             </div>
           </section>
-     
         </div>
       </section>
 
@@ -62,13 +67,16 @@ const RootPage = async() => {
           </p>
         </div>
         <div className="grid gap-6 xl:grid-cols-2">
-          {dummyInterviews?.map((interview) => {
-            return <InterviewCard key={interview.id} {...interview} />;
-          })}
+          {hasPastInterviews ? (
+            userInterviews?.map((interview) => {
+              return <InterviewCard key={interview.id} {...interview} />;
+            })
+          ) : (
+            <p className="rounded-[1.5rem] border border-dashed border-primary/15 bg-white/45 px-5 py-4 text-base text-foreground/65">
+              You haven&apos;t taken any interview yet.
+            </p>
+          )}
         </div>
-        <p className="rounded-[1.5rem] border border-dashed border-primary/15 bg-white/45 px-5 py-4 text-base text-foreground/65">
-          You haven&apos;t taken any interview yet.
-        </p>
       </section>
 
       <section className="rounded-[2rem] border border-primary/10 bg-white/45 px-6 py-6">
