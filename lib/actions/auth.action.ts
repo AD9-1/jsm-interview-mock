@@ -107,10 +107,26 @@ export async function getInterviewQuestionsbyUserId(
     .collection("interviews")
     .where("userId", "==", userId)
     .get();
- 
 
   const interviews: Interview[] = interviewsSnapshot.docs.map((doc) => {
     return { id: doc.id, ...(doc.data() as Omit<Interview, "id">) };
   });
+  return interviews;
+}
+export async function getLatestInterviews(
+  params: GetLatestInterviewsParams,
+): Promise<Interview[] | []> {
+  const { userId, limit = 20 } = params;
+  const interviewsDoc = await db
+    .collection("interviews")
+    .where("userId", "!=", userId)
+    .where("finalized", "==", true)
+    .limit(limit)
+    .orderBy("createdAt", "desc")
+    .get();
+  const interviews: Interview[] = interviewsDoc.docs.map((doc) => ({
+    id: doc.id as string,
+    ...(doc.data() as Omit<Interview, "id">),
+  }));
   return interviews;
 }

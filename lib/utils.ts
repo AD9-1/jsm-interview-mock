@@ -22,7 +22,7 @@ const techIcons = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
 const iconsMap = (tech: string) => {
   const k = tech.toLowerCase().replace(/\.js$/, "").replace(/\s+/g, "");
 
-  return  mappings[k];
+  return  mappings[k as keyof mappings] ;
 };
 //
 export const fetcher = async (techArray: string[]) => {

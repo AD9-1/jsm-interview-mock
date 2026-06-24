@@ -9,6 +9,7 @@ interface Interview {
   userId: string;
   type: string;
   finalized: boolean;
+   coverImage: string;
 }
 
 interface InterviewCardProps {
@@ -19,6 +20,10 @@ interface InterviewCardProps {
   type: string;
   createdAt: string;
   coverImage: string;
+}
+interface GetLatestInterviewsParams {
+  userId: string;
+  limit?: number;
 }
 interface SignInParams {
   email: string;

@@ -1,25 +1,31 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
 
 import { dummyInterviews } from "@/constants/index.t";
 import InterviewCard from "@/components/InterviewCard";
 import {
   getCurrentUser,
   getInterviewQuestionsbyUserId,
+  getLatestInterviews,
 } from "@/lib/actions/auth.action";
+import { toast } from "sonner";
 
 const RootPage = async () => {
   const user = await getCurrentUser();
-
   const userId = user?.uid;
-  const userInterviews = userId
-    ? await getInterviewQuestionsbyUserId(userId!)
-    : [];
+
+  if (!userId) {
+    toast.error("User not logged in. Please log in to view your interviews.");
+  }
+  const [userInterviews, latestInterviews] = await Promise.all([
+    getInterviewQuestionsbyUserId(userId || ""),
+    getLatestInterviews({ userId: userId! }),
+  ]);
+
   console.log("interviews in page.tsx", userInterviews);
   const hasPastInterviews = userInterviews?.length > 0;
-
+  const hasUpcomingInterviews = latestInterviews.length > 0;
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-[2.25rem] border border-primary/10 bg-[linear-gradient(135deg,rgba(255,251,245,0.9),rgba(249,226,199,0.92)_48%,rgba(205,152,110,0.82))] px-6 py-8 shadow-[0_30px_90px_rgba(101,58,31,0.16)] md:px-10 md:py-12">
@@ -86,9 +92,16 @@ const RootPage = async () => {
         <h2 className="mt-2 font-[family-name:var(--font-montagu-slab)] text-3xl font-semibold text-foreground md:text-4xl">
           Take an Interview
         </h2>
-        <p className="mt-4 text-lg text-foreground/68">
-          There are no interviews available.
-        </p>
+
+        {hasUpcomingInterviews ? (
+          latestInterviews?.map((interview) => (
+            <InterviewCard key={interview.id} {...interview} />
+          ))
+        ) : (
+          <p className="mt-4 text-lg text-foreground/68">
+            There are no interviews available.
+          </p>
+        )}
       </section>
     </div>
   );

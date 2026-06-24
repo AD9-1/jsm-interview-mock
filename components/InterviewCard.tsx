@@ -12,7 +12,7 @@ const InterviewCard = ({
   type,
   techstack,
   createdAt,
-  coverImage
+  coverImage,
 }: InterviewCardProps) => {
   const feedback = null as Feedback | null;
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
@@ -71,7 +71,7 @@ const InterviewCard = ({
             <Link
               href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
-              {feedback ? "View Feedback" : "Take Interview"}
+              {feedback ? "View Feedback" : "View Interview"}
             </Link>
           </Button>
         </div>
