@@ -64,3 +64,6 @@ interface Message {
   role: string;
   transcript: string;
 }
+interface RouteParams {
+  params:{ id: string }
+}

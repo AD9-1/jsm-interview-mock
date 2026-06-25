@@ -23,7 +23,7 @@ const RootPage = async () => {
     getLatestInterviews({ userId: userId! }),
   ]);
 
-  console.log("interviews in page.tsx", userInterviews);
+  console.log("interviews in page.tsx", latestInterviews);
   const hasPastInterviews = userInterviews?.length > 0;
   const hasUpcomingInterviews = latestInterviews.length > 0;
   return (
@@ -75,7 +75,11 @@ const RootPage = async () => {
         <div className="grid gap-6 xl:grid-cols-2">
           {hasPastInterviews ? (
             userInterviews?.map((interview) => {
-              return <InterviewCard key={interview.id} {...interview} />;
+              return (
+                <div key={interview.id}>
+                  <InterviewCard {...interview} />
+                </div>
+              );
             })
           ) : (
             <p className="rounded-[1.5rem] border border-dashed border-primary/15 bg-white/45 px-5 py-4 text-base text-foreground/65">

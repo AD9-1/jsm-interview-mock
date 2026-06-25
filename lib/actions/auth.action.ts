@@ -130,3 +130,14 @@ export async function getLatestInterviews(
   }));
   return interviews;
 }
+export async function getInterviewById(
+  interviewId: string,
+): Promise<Interview | null> {
+
+  const interviewDoc=await db.collection("interviews").doc(interviewId).get();
+if(!interviewDoc.exists){
+  return null;
+}
+const interview = interviewDoc.data() as Interview;
+  return interview;
+}
